@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -O0 -I../include -I../c-libp2p/include -I../c-libp2p/c-multihash/include -I../c-libp2p/c-multiaddr/include -I../c-libp2p/c-protobuf -g3 -Wall -std=gnu99
-LFLAGS = -L../c-libp2p -L../c-libp2p/c-multihash -L../c-libp2p/c-multiaddr -lp2p -lm -lmultihash -lmultiaddr -lpthread -lresolv -lcurl
+LFLAGS = -L../c-libp2p -L../c-libp2p/c-multihash -L../c-libp2p/c-multiaddr -l:libp2p.a -lm -llmdb -lmultihash -lmultiaddr -lpthread -lresolv -lcurl
 DEPS = cmd/ipfs/test_init.h repo/test_repo_bootstrap_peers.h repo/test_repo_config.h repo/test_repo_identity.h cid/test_cid.h
 OBJS = main.o \
 	../blocks/block.o ../blocks/blockstore.o \
@@ -36,7 +36,7 @@ OBJS = main.o \
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 ipfs: $(OBJS)
-	$(CC) -o $@ $^ $(LFLAGS) ../lmdb/libraries/liblmdb/liblmdb.a
+	$(CC) -o $@ $^ $(LFLAGS)
 
 all: ipfs
 
