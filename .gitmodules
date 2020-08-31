@@ -1,3 +1,0 @@
-[submodule "c-libp2p"]
-	path = c-libp2p
-	url = https://github.com/Agorise/c-libp2p.git
