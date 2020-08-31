@@ -71,6 +71,7 @@ void strip_quotes(int argc, char** argv) {
 #define GET 8
 #define NAME 9
 #define SWARM 10
+#define HELP 255
 
 /**
  * Find out if this command line argument is part of a switch
@@ -151,7 +152,28 @@ int parse_arguments(int argc, char** argv) {
 	if (strcmp("swarm", argv[index]) == 0) {
 		return SWARM;
 	}
+	if (strcmp("help", argv[index]) == 0) {
+		return HELP;
+	}
 	return -1;
+}
+
+/***
+ * help screen
+ */
+static void ipfs_help(void) {
+	printf("available commands:\n\n");
+	printf("ipfs add      inserts a file into IPFS\n");
+	printf("ipfs cat      fetches a given IPFS ressource\n");
+	printf("ipfs daemon   loads the ipfs daemon\n");
+	printf("ipfs dns      -write me-\n");
+	printf("ipfs get      -write me-\n");
+	printf("ipfs help     displays this screen\n");
+	printf("ipfs init     initializes local storage for IPFS\n");
+	printf("ipfs name     -write me-\n");
+	printf("ipfs object   -write me-\n");
+	printf("ipfs ping     -write me-\n");
+	printf("ipfs swarm    -write me-\n");
 }
 
 /***
@@ -196,8 +218,11 @@ int main(int argc, char** argv) {
 			case (SWARM):
 				retVal = ipfs_swarm(args);
 				break;
+			case (HELP):
+				ipfs_help();
+				break;
 			default:
-				libp2p_logger_error("main", "Invalid command line arguments.\n");
+				libp2p_logger_error("main", "Invalid command line arguments. Type 'ipfs help' for available commands.\n");
 				break;
 		}
 		cli_arguments_free(args);
