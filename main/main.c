@@ -12,12 +12,12 @@
 #include "ipfs/namesys/name.h"
 
 #ifdef __MINGW32__
-    void bzero(void *s, size_t n)
+    static void bzero(void *s, size_t n)
     {
         memset (s, '\0', n);
     }
 
-    char *strtok_r(char *str, const char *delim, char **save)
+    static char *strtok_r(char *str, const char *delim, char **save)
     {
         char *res, *last;
 
@@ -38,7 +38,7 @@
     }
 #endif // MINGW
 
-void stripit(int argc, char** argv) {
+static void stripit(int argc, char** argv) {
 	char* old_arg = argv[argc];
 	int full_length = strlen(old_arg);
 	char *tmp = (char*) malloc(full_length + 1);
@@ -53,7 +53,7 @@ void stripit(int argc, char** argv) {
 	return;
 }
 
-void strip_quotes(int argc, char** argv) {
+static void strip_quotes(int argc, char** argv) {
 	for(int i = 0; i < argc; i++) {
 		if (argv[i][0] == '\'' && argv[i][strlen(argv[i])-1] == '\'') {
 			stripit(i, argv);
@@ -80,7 +80,7 @@ void strip_quotes(int argc, char** argv) {
  * @param index the argument to look at
  * @returns 0 if not a switch, 1 if it is a regular switch, 2 if the next parameter is also part of the switch
  */
-int is_switch(int argc, char** argv, int index) {
+static int is_switch(int argc, char** argv, int index) {
 	char* to_test = argv[index];
 	if (to_test[0] == '-') {
 		if (strcmp(to_test, "-c") == 0 || strcmp(to_test, "--config") == 0) {
@@ -97,7 +97,7 @@ int is_switch(int argc, char** argv, int index) {
  * @param argv the actual command line arguments
  * @returns the index of the item that does something, or false(0)
  */
-int get_cli_verb(int argc, char** argv) {
+static int get_cli_verb(int argc, char** argv) {
 	for(int i = 1; i < argc; i++) {
 		int advance_by_more_than_one = is_switch(argc, argv, i);
 		if (advance_by_more_than_one == 0) {
@@ -116,7 +116,7 @@ int get_cli_verb(int argc, char** argv) {
 /***
  * Basic parsing of command line arguments to figure out where the user wants to go
  */
-int parse_arguments(int argc, char** argv) {
+static int parse_arguments(int argc, char** argv) {
 	int index = get_cli_verb(argc, argv);
 	if (argc == 1 || index == 0) {
 		libp2p_logger_error("main", "No parameters passed.\n");
@@ -228,5 +228,7 @@ int main(int argc, char** argv) {
 		cli_arguments_free(args);
 	}
 	libp2p_logger_free();
-	exit(retVal == 1 ? EXIT_SUCCESS : EXIT_FAILURE);
+
+	if (retVal == 1) return(EXIT_SUCCESS);
+	return(EXIT_FAILURE);
 }
