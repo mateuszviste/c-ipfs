@@ -39,7 +39,7 @@ int ipfs_swarm (struct CliArguments* args) {
 	struct IpfsNode* client_node = NULL;
 
 	if (args->argc < (args->verb_index + 2)) {
-		libp2p_logger_error("swarm", "Not enough command line arguments. Should be \"swarm connect\" or \"swarm disconnect\" etc.\n");
+		libp2p_logger_error("swarm", "Not enough command line arguments. Should be \"swarm connect <peer>\" or \"swarm disconnect\" etc.\n");
 		goto exit;
 	}
 
@@ -56,13 +56,13 @@ int ipfs_swarm (struct CliArguments* args) {
 	const char* which = args->argv[args->verb_index + 1];
 	const char* path = args->argv[args->verb_index + 2];
 	// determine what we're doing
-	if (strcmp(which, "connect") == 0) {
+	if ((strcmp(which, "connect") == 0) && (args->argc == args->verb_index + 3)) {
 		retVal = ipfs_swarm_connect(client_node, path);
 	} else if (strcmp(which, "disconnect") == 0) {
 		libp2p_logger_error("swarm", "Swarm disconnect not implemented yet.\n");
 		retVal = 0;
 	} else {
-		libp2p_logger_error("swarm", "Nothing useful found on command line. Should be \"swarm connect\" or \"swarm disconnect\".\n");
+		libp2p_logger_error("swarm", "Nothing useful found on command line. Should be \"swarm connect <peer>\" or \"swarm disconnect\".\n");
 		goto exit;
 	}
 
